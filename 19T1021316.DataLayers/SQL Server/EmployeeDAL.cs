@@ -133,7 +133,7 @@ namespace _19T1021316.DataLayers.SQL_Server
                         EmployeeID = Convert.ToInt32(dbReader["EmployeeID"]),
                         LastName = Convert.ToString(dbReader["LastName"]),
                         FirstName = Convert.ToString(dbReader["FirstName"]),
-                        BirthDate = Convert.ToString(dbReader["BirthDate"]),
+                        BirthDate = Convert.ToDateTime(dbReader["BirthDate"]),
                         Photo = Convert.ToString(dbReader["Photo"]),
                         Notes = Convert.ToString(dbReader["Notes"]),
                         Email = Convert.ToString(dbReader["Email"])
@@ -168,10 +168,6 @@ namespace _19T1021316.DataLayers.SQL_Server
             return result;
         }
 
-        public bool Inused(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// 
@@ -217,7 +213,7 @@ namespace _19T1021316.DataLayers.SQL_Server
                         EmployeeID = Convert.ToInt32(dbReader["EmployeeID"]),
                         LastName = Convert.ToString(dbReader["LastName"]),
                         FirstName = Convert.ToString(dbReader["FirstName"]),
-                        BirthDate = Convert.ToString(dbReader["BirthDate"]),
+                        BirthDate = Convert.ToDateTime(dbReader["BirthDate"]),
                         Photo = Convert.ToString(dbReader["Photo"]),
                         Notes = Convert.ToString(dbReader["Notes"]),
                         Email = Convert.ToString(dbReader["Email"])

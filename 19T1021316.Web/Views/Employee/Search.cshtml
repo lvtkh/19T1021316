@@ -4,7 +4,8 @@
     Layout = null;
 }
 
-<p>
+@* Kết quả tìm kiếm *@
+<p style="margin-top: 10px;">
     Có <strong>@Model.RowCount</strong> Nhân viên trong tổng số <strong>@Model.PageCount</strong> trang
 </p>
 
@@ -18,7 +19,6 @@
                 <th>Ngày sinh</th>
                 <th>Ghi chú</th>
                 <th>Email</th>
-                <th>Mật khẩu</th>
                 <th></th>
             </tr>
         </thead>
@@ -29,10 +29,10 @@
                     <td> <img src="@item.Photo" class="media-object" style="width:60px"> </td>
                     <td>@item.LastName</td>
                     <td>@item.FirstName</td>
-                    <td>@item.BirthDate</td>
+                    <td>@item.BirthDate.Date.ToString("yyyy/MM/dd")</td>
                     <td>@item.Notes</td>
                     <td>@item.Email</td>
-                    <td>@item.Password</td>
+
                     <td class="text-right">
                         <a href="~/Employee/Edit/@item.EmployeeID" class="btn btn-sm btn-primary" title="Sửa">
                             <i class="fa fa-edit"></i>
@@ -47,13 +47,27 @@
     </table>
 
 
+    <!-- Left-aligned media object -->
+    @*<div class="media">
+            <div class="media-left">
+                <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="media-object" style="width:60px">
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">Left-aligned</h4>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
+        </div>*@
+
+
+</div>
+
 
 @* Phân trang *@
 <div class="text-center">
     <ul class="pagination">
-        @for (int i = 1; i <= ViewBag.PageCount; i++)
+        @for (int i = 1; i <= Model.PageCount; i++)
         {
-            if (i == ViewBag.Page)
+            if (i == Model.Page)
             {
 
                 <li class="active"><a href="#">i</a></li>
@@ -64,10 +78,8 @@
             }
 
         }
-    </ul>
-</div>
 
-    </div>
+    </ul>
 </div>
 
 

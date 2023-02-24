@@ -11,8 +11,8 @@ using _19T1021316.DataLayers.SQL_Server;
 namespace _19T1021316.BusinessLayers
 {
     /// <summary>
-    /// cung cấp các chức năng nghiệp vụ liên quan đến: quốc gia nhà cung cấp khách hàng
-    /// người giao hàng nhân viên loại hàng
+    /// cung cấp các chức năng nghiệp vụ liên quan đến
+    /// Quốc gia, Nhà cung cấp, Khách hàng,Loại hàng, Nhân viên, Người giao hàng.
     /// </summary>
 
     public static class CommonDataService
@@ -51,8 +51,6 @@ namespace _19T1021316.BusinessLayers
         }
 
 
-
-
         #endregion
 
         #region chức năng tác nghiệp liên quan đến nhà cung cấp
@@ -61,7 +59,7 @@ namespace _19T1021316.BusinessLayers
         /// </summary>
         /// <param name="page"> trang cần xem</param>
         /// <param name="pageSize"> Số dòng hiển thị trên mỗi trang (0 nếu không phân trang)</param>
-        /// <param name="searchValue">Giá trị tìm kiếm(chuỗi rỗng nếu lấy toàn bộ dữ liệu)</param>
+        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không tìm kiếm)</param>
         /// <param name="rowCount">tham số đầu ra: số dòng dữ liệu truy vấn được</param>
         /// <returns></returns>
         public static List<Supplier> ListOfSuppliers(int page,
@@ -73,16 +71,17 @@ namespace _19T1021316.BusinessLayers
             return supplierDB.List(page, pageSize, searchValue).ToList();
         }
         /// <summary>
-        /// Tìm kiếm và lấy dánh sách nhà cung cung cấp
+        /// Tìm kiếm và lấy danh sách nhà cung cấp (không phân trang)
         /// </summary>
-        /// <param name="supplierID"></param>
+        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
         /// <returns></returns>
+
         public static List<Supplier> ListOfSuppliers(string searchValue = "")
         {
             return supplierDB.List(1, 0, searchValue).ToList();
         }
         /// <summary>
-        /// Tìm kiếm 1 nhà cung cấp
+        /// Lấy thông tin nhà cung cấp dựa vào mã
         /// </summary>
         /// <param name="supplierID"></param>
         /// <returns></returns>
@@ -91,9 +90,9 @@ namespace _19T1021316.BusinessLayers
             return supplierDB.Get(supplierID);
         }
         /// <summary>
-        /// Thêm nhà cung cấp
+        /// Thêm mới nhà cung cấp
         /// </summary>
-        /// <param name="supplierID"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
         public static int AddGetSupplier(Supplier data)
         {
@@ -109,7 +108,7 @@ namespace _19T1021316.BusinessLayers
             return supplierDB.Update(data);
         }
         /// <summary>
-        /// Xoá nhà cung cấp
+        /// Xoá nhà cung cấp dựa vào ID
         /// </summary>
         /// <param name="supplierID"></param>
         /// <returns></returns>
@@ -124,7 +123,7 @@ namespace _19T1021316.BusinessLayers
         /// <returns></returns>
         public static bool InUserSupplier(int supplierID)
         {
-            return supplierDB.Inused(supplierID);
+            return supplierDB.InUsed(supplierID);
         }
 
         #endregion
@@ -146,16 +145,16 @@ namespace _19T1021316.BusinessLayers
             return customerDB.List(page, pageSize, searchValue).ToList();
         }
         /// <summary>
-        /// 
+        /// Tìm kiếm và lấy danh sách khách hàng (không phân trang)
         /// </summary>
-        /// <param name="searchValue"></param>
+        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
         /// <returns></returns>
         public static List<Customer> ListOfCustomers(string searchValue = "")
         {
             return customerDB.List(1, 0, searchValue).ToList();
         }
         /// <summary>
-        /// 
+        /// Lấy thông tin khách hàng dựa vào mã
         /// </summary>
         /// <param name="customerID"></param>
         /// <returns></returns>
@@ -164,7 +163,7 @@ namespace _19T1021316.BusinessLayers
             return customerDB.Get(customerID);
         }
         /// <summary>
-        /// 
+        /// Thêm mới khách hàng
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -173,7 +172,7 @@ namespace _19T1021316.BusinessLayers
             return customerDB.Add(data);
         }
         /// <summary>
-        /// 
+        /// Cập nhật thông tin khách hàng
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -182,7 +181,7 @@ namespace _19T1021316.BusinessLayers
             return customerDB.Update(data);
         }
         /// <summary>
-        /// 
+        /// Xoá khách hàng dựa vào ID
         /// </summary>
         /// <param name="customerID"></param>
         /// <returns></returns>
@@ -191,20 +190,20 @@ namespace _19T1021316.BusinessLayers
             return customerDB.Delete(customerID);
         }
         /// <summary>
-        /// 
+        /// Kiểm tra xem khách hàng có dữ liệu liên quan hay không?
         /// </summary>
         /// <param name="customerID"></param>
         /// <returns></returns>
         public static bool InUserCustomer(int customerID)
         {
-            return customerDB.Inused(customerID);
+            return customerDB.InUsed(customerID);
         }
 
         #endregion
 
         #region chức năng tác nghiệp liên quan đến loaị hàng
         /// <summary>
-        /// Tìm kiếm và lấy danh sách loaij hàng dưới dạng phân trang
+        /// Tìm kiếm và lấy danh sách loại hàng dưới dạng phân trang
         /// </summary>
         /// <param name="page"> trang cần xem</param>
         /// <param name="pageSize"> Số dòng hiển thị trên mỗi trang (0 nếu không phân trang)</param>
@@ -220,16 +219,16 @@ namespace _19T1021316.BusinessLayers
             return categoryDB.List(page, pageSize, searchValue).ToList();
         }
         /// <summary>
-        /// 
+        /// Tìm kiếm và lấy danh sách loại hàng (không phân trang)
         /// </summary>
-        /// <param name="searchValue"></param>
+        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
         /// <returns></returns>
         public static List<Category> ListOfCategories(string searchValue = "")
         {
             return categoryDB.List(1, 0, searchValue).ToList();
         }
         /// <summary>
-        /// 
+        /// Lấy thông tin loại hàng dựa vào mã
         /// </summary>
         /// <param name="categoryID"></param>
         /// <returns></returns>
@@ -238,7 +237,7 @@ namespace _19T1021316.BusinessLayers
             return categoryDB.Get(categoryID);
         }
         /// <summary>
-        /// 
+        /// Thêm mới loại hàng
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -247,7 +246,7 @@ namespace _19T1021316.BusinessLayers
             return categoryDB.Add(data);
         }
         /// <summary>
-        /// 
+        /// Cập nhật thông tin loại hàng
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -256,7 +255,7 @@ namespace _19T1021316.BusinessLayers
             return categoryDB.Update(data);
         }
         /// <summary>
-        /// 
+        /// Xoá loại hàng dựa vào ID
         /// </summary>
         /// <param name="categoryID"></param>
         /// <returns></returns>
@@ -266,13 +265,13 @@ namespace _19T1021316.BusinessLayers
             return categoryDB.Delete(categoryID);
         }
         /// <summary>
-        /// 
+        /// Kiểm tra xem loại hàng có dữ liệu liên quan hay không?
         /// </summary>
         /// <param name="categoryID"></param>
         /// <returns></returns>
         public static bool InUserCategory(int categoryID)
         {
-            return categoryDB.Inused(categoryID);
+            return categoryDB.InUsed(categoryID);
         }
 
         #endregion
@@ -294,16 +293,16 @@ namespace _19T1021316.BusinessLayers
             return employeeDB.List(page, pageSize, searchValue).ToList();
         }
         /// <summary>
-        /// 
+        /// Tìm kiếm và lấy danh sách nhân viên (không phân trang)
         /// </summary>
-        /// <param name="searchValue"></param>
+        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
         /// <returns></returns>
         public static List<Employee> ListOfEmployees(string searchValue = "")
         {
             return employeeDB.List(1, 0, searchValue).ToList();
         }
         /// <summary>
-        /// 
+        /// Lấy thông tin nhân viên dựa vào mã
         /// </summary>
         /// <param name="employeeID"></param>
         /// <returns></returns>
@@ -312,7 +311,7 @@ namespace _19T1021316.BusinessLayers
             return employeeDB.Get(employeeID);
         }
         /// <summary>
-        /// 
+        /// Thêm mới nhân viên
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -321,7 +320,7 @@ namespace _19T1021316.BusinessLayers
             return employeeDB.Add(data);
         }
         /// <summary>
-        /// 
+        /// Cập nhật thông tin nhân viên
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -330,7 +329,7 @@ namespace _19T1021316.BusinessLayers
             return employeeDB.Update(data);
         }
         /// <summary>
-        /// 
+        /// Xoá nhân viên dựa vào ID
         /// </summary>
         /// <param name="employeeID"></param>
         /// <returns></returns>
@@ -340,13 +339,13 @@ namespace _19T1021316.BusinessLayers
             return employeeDB.Delete(employeeID);
         }
         /// <summary>
-        /// 
+        /// Kiểm tra xem nhân viên có dữ liệu liên quan hay không?
         /// </summary>
         /// <param name="employeeID"></param>
         /// <returns></returns>
         public static bool InUserEmloyee(int employeeID)
         {
-            return employeeDB.Inused(employeeID);
+            return employeeDB.InUsed(employeeID);
         }
 
         #endregion
@@ -368,38 +367,63 @@ namespace _19T1021316.BusinessLayers
             rowCount = shipperDB.Count(searchValue);
             return shipperDB.List(page, pageSize, searchValue).ToList();
         }
-
+        /// <summary>
+        /// Tìm kiếm và lấy danh sách người giao hàng(không phân trang)
+        /// </summary>
+        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
+        /// <returns></returns>
         public static List<Shipper> ListOfShippers(string searchValue = "")
         {
             return shipperDB.List(1, 0, searchValue).ToList();
         }
-
+        /// <summary>
+        /// Lấy thông tin người giao hàng dựa vào mã
+        /// </summary>
+        /// <param name="shipperID"></param>
+        /// <returns></returns>
         public static Shipper GetShipper(int shipperID)
         {
             return shipperDB.Get(shipperID);
         }
-
+        /// <summary>
+        /// Thêm mới người giao hàng
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static int AddGetShipper(Shipper data)
         {
             return shipperDB.Add(data);
         }
-
+        /// <summary>
+        ///  Cập nhật thông tin người giao hàng
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static bool UpdateShipper(Shipper data)
         {
             return shipperDB.Update(data);
         }
-
+        /// <summary>
+        /// Xoá người giao hàng dựa vào ID
+        /// </summary>
+        /// <param name="shipperID"></param>
+        /// <returns></returns>
         public static bool DeleteShipper(int shipperID)
         {
             return shipperDB.Delete(shipperID);
         }
-
+        /// <summary>
+        /// Kiểm tra xem người giao hàng có dữ liệu liên quan hay không?
+        /// </summary>
+        /// <param name="shipperID"></param>
+        /// <returns></returns>
         public static bool InUserShipper(int shipperID)
         {
-            return shipperDB.Inused(shipperID);
+            return shipperDB.InUsed(shipperID);
         }
-
 
         #endregion
     }
 }
+
+

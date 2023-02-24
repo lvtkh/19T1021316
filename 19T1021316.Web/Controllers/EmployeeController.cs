@@ -12,27 +12,24 @@ namespace _19T1021316.Web.Controllers
     public class EmployeeController : Controller
     {
         private const int PAGE_SIZE = 5;
-        private const string EMPLOYEE_SEARCH = "EmployeeSearchCondition";
-
-
-        ///// <summary>
-        ///// quản lý nhân viên
-        ///// </summary>
-        ///// <returns></returns>
-        //public ActionResult Index(int page = 1, string searchValue = "")
-        //{
-        //    int rowCount = 0;
-        //    var data = CommonDataService.ListOfEmployees(page, PAGE_SIZE, searchValue, out rowCount);
-        //    int pageCount = rowCount / PAGE_SIZE;
-        //    if (rowCount % PAGE_SIZE > 0)
-        //        rowCount += 1;
-        //    ViewBag.Page = page;
-        //    ViewBag.RowCount = rowCount;
-        //    ViewBag.PageCount = pageCount;
-        //    ViewBag.SeachValue = searchValue;
-        //    return View(data);
-        //}
-
+        private const string EMPLOYEE_SEARCH = "EmployeeSearchConditinon";
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+       /* public ActionResult Index(int page = 1, string searchValue = "")
+        {
+            int rowCount = 0;
+            var data = CommonDataService.ListOfEmployees(page, PAGE_SIZE, searchValue, out rowCount);
+            int pageCount = rowCount / PAGE_SIZE;
+            if (rowCount % PAGE_SIZE > 0)
+                pageCount += 1;
+            ViewBag.Page = page;
+            ViewBag.RowCount = rowCount;
+            ViewBag.PageCount = pageCount;
+            ViewBag.SeachValue = searchValue;
+            return View(data);
+        }*/
         public ActionResult Index()
         {
             Models.PaginationSearchInput condition = Session[EMPLOYEE_SEARCH] as Models.PaginationSearchInput;
@@ -47,13 +44,12 @@ namespace _19T1021316.Web.Controllers
             }
 
             return View(condition);
-        }
 
+        }
         public ActionResult Search(Models.PaginationSearchInput condition)
         {
             int rowCount = 0;
             var data = CommonDataService.ListOfEmployees(condition.Page, condition.PageSize, condition.SearchValue, out rowCount);
-
             var result = new Models.EmployeeSearchOutput()
             {
                 Page = condition.Page,
@@ -62,15 +58,11 @@ namespace _19T1021316.Web.Controllers
                 RowCount = rowCount,
                 Data = data
             };
-
             Session[EMPLOYEE_SEARCH] = condition;
-
             return View(result);
         }
-
-
         /// <summary>
-        /// Thêm Nhân viên
+        /// Bổ sung Nhân viên
         /// </summary>
         /// <returns></returns>
         public ActionResult Create()
@@ -91,44 +83,34 @@ namespace _19T1021316.Web.Controllers
         {
             if (id == 0)
                 return RedirectToAction("Index");
-
             var data = CommonDataService.GetEmployee(id);
-
             if (data == null)
                 return RedirectToAction("Index");
-
             ViewBag.Title = "Cập nhật nhân viên";
             return View(data);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Save(Employee data)
         {
-            if (string.IsNullOrWhiteSpace(data.FirstName))
-                ModelState.AddModelError(nameof(data.FirstName), "Họ đệm không được để trống");
             if (string.IsNullOrWhiteSpace(data.LastName))
-                ModelState.AddModelError(nameof(data.LastName), "Tên không được để trống");
-            if (string.IsNullOrWhiteSpace(data.BirthDate))
-                ModelState.AddModelError(nameof(data.BirthDate), "Ngày sinh không được để trống");
-            if (string.IsNullOrWhiteSpace(data.Email))
-                ModelState.AddModelError(nameof(data.Email), "Vui lòng nhập email");
-            if (string.IsNullOrWhiteSpace(data.Password))
-                ModelState.AddModelError(nameof(data.Password), "Vui lòng nhập mật khẩu");
+                ModelState.AddModelError(nameof(data.LastName), "Họ đệm không được để trống");
+            if (string.IsNullOrWhiteSpace(data.FirstName))
+                ModelState.AddModelError(nameof(data.FirstName), "Tên nhân viên không dc để trống");
+            if (string.IsNullOrWhiteSpace(data.Photo))
+                ModelState.AddModelError(nameof(data.Photo), "Vui lòng chọn ảnh");
+
 
             data.Notes = data.Notes ?? "";
-            data.Photo = data.Photo ?? "";
+            data.Email = data.Email ?? "";
+
+
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Title = data.EmployeeID == 0 ? "Bổ sung nhân viên" : "Cập nhật nhân viên";
+                ViewBag.Tille = data.EmployeeID == 0 ? "Bổ sung nhân viên" : "Cập nhật nhân viên ";
                 return View("Edit", data);
             }
-
             if (data.EmployeeID == 0)
             {
                 CommonDataService.AddGetEmployee(data);
@@ -147,7 +129,6 @@ namespace _19T1021316.Web.Controllers
         {
             if (id == 0)
                 return RedirectToAction("Index");
-
             if (Request.HttpMethod == "POST")
             {
                 CommonDataService.DeleteEmployee(id);
@@ -160,6 +141,7 @@ namespace _19T1021316.Web.Controllers
                     return RedirectToAction("Index");
                 return View(data);
             }
+
         }
     }
 }

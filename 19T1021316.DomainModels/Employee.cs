@@ -26,7 +26,7 @@ namespace _19T1021316.DomainModels
         /// <summary>
         /// 
         /// </summary>
-        public string BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
         /// <summary>
         /// 
         /// </summary>
