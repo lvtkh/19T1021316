@@ -10,7 +10,7 @@ using _19T1021316.DomainModels;
 namespace _19T1021316.DataLayers.SQL_Server
 {
     /// <summary>
-    /// 
+    /// Cài đặt chức năng xử lý dữ liệu liên quan đến nhân viên
     /// </summary>
     public class EmployeeDAL : _BaseDAL, ICommonDAL<Employee>
     {
@@ -22,7 +22,7 @@ namespace _19T1021316.DataLayers.SQL_Server
         {
         }
         /// <summary>
-        /// 
+        /// thêm nhân viên
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -51,7 +51,7 @@ namespace _19T1021316.DataLayers.SQL_Server
             return result;
         }
         /// <summary>
-        /// 
+        /// phân trang 
         /// </summary>
         /// <param name="searchValue"></param>
         /// <returns></returns>
@@ -83,7 +83,7 @@ namespace _19T1021316.DataLayers.SQL_Server
             return count;
         }
         /// <summary>
-        /// 
+        /// xoá nhân viên
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -170,7 +170,7 @@ namespace _19T1021316.DataLayers.SQL_Server
 
 
         /// <summary>
-        /// 
+        /// hiển thị danh sách nhân viên
         /// </summary>
         /// <param name="page"></param>
         /// <param name="pageSize"></param>

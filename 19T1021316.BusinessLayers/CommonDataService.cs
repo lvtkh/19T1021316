@@ -11,18 +11,18 @@ using _19T1021316.DataLayers.SQL_Server;
 namespace _19T1021316.BusinessLayers
 {
     /// <summary>
-    /// cung cấp các chức năng nghiệp vụ liên quan đến
-    /// Quốc gia, Nhà cung cấp, Khách hàng,Loại hàng, Nhân viên, Người giao hàng.
+    /// Cung cấp các chức năng xử lý dữ liệu chung liên quan đến:
+    /// (Quốc gia, Nhà cung cấp, Khách hàng, Người giao hàng, Nhân viên, Lọai hàng),
     /// </summary>
-
     public static class CommonDataService
     {
         private static ICountryDAL countryDB;
         private static ICommonDAL<Supplier> supplierDB;
         private static ICommonDAL<Customer> customerDB;
-        private static ICommonDAL<Category> categoryDB;
-        private static ICommonDAL<Employee> employeeDB;
         private static ICommonDAL<Shipper> shipperDB;
+        private static ICommonDAL<Employee> employeeDB;
+        private static ICommonDAL<Category> categoryDB;
+        private static IProductDAL productDB;
 
         /// <summary>
         /// Ctor
@@ -31,18 +31,19 @@ namespace _19T1021316.BusinessLayers
         {
             string connectionString = ConfigurationManager.ConnectionStrings["DB"].ConnectionString;
 
-            //   countryDB = new DataLayers.FakeDB.CountryDAL();
             countryDB = new DataLayers.SQL_Server.CountryDAL(connectionString);
             supplierDB = new DataLayers.SQL_Server.SupplierDAL(connectionString);
             customerDB = new DataLayers.SQL_Server.CustomerDAL(connectionString);
-            categoryDB = new DataLayers.SQL_Server.CategoryDAL(connectionString);
-            employeeDB = new DataLayers.SQL_Server.EmployeeDAL(connectionString);
             shipperDB = new DataLayers.SQL_Server.ShipperDAL(connectionString);
-
+            employeeDB = new DataLayers.SQL_Server.EmployeeDAL(connectionString);
+            categoryDB = new DataLayers.SQL_Server.CategoryDAL(connectionString);
+            productDB = new DataLayers.SQL_Server.ProductDAL(connectionString);
         }
-        #region chức năng tác nghiệp liên quan đến quốc gia
+
+        #region Xử lý liên quan đến Quốc gia
+
         /// <summary>
-        /// Danh sách các quốc gia
+        /// Lấy danh sách Quốc gia
         /// </summary>
         /// <returns></returns>
         public static List<Country> ListOfCountries()
@@ -50,38 +51,44 @@ namespace _19T1021316.BusinessLayers
             return countryDB.List().ToList();
         }
 
-
         #endregion
 
-        #region chức năng tác nghiệp liên quan đến nhà cung cấp
+
+        #region Nhà cung cấp
+
         /// <summary>
-        /// Tìm kiếm và lấy danh sách nhà cung cấp dưới dạng phân trang
+        /// Tìm kiếm và lấy danh sách của nhà cung cấp
         /// </summary>
-        /// <param name="page"> trang cần xem</param>
-        /// <param name="pageSize"> Số dòng hiển thị trên mỗi trang (0 nếu không phân trang)</param>
-        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không tìm kiếm)</param>
-        /// <param name="rowCount">tham số đầu ra: số dòng dữ liệu truy vấn được</param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
         /// <returns></returns>
         public static List<Supplier> ListOfSuppliers(int page,
-                int pageSize,
-                string searchValue,
-                out int rowCount)
+                                                    int pageSize,
+                                                    string searchValue,
+                                                    out int rowCount)
         {
             rowCount = supplierDB.Count(searchValue);
             return supplierDB.List(page, pageSize, searchValue).ToList();
         }
-        /// <summary>
-        /// Tìm kiếm và lấy danh sách nhà cung cấp (không phân trang)
-        /// </summary>
-        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
-        /// <returns></returns>
 
+
+        /// <summary>
+        /// Tìm kiếm và lấy danh sách của nhà cung cấp (không phân trang)
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
         public static List<Supplier> ListOfSuppliers(string searchValue = "")
         {
             return supplierDB.List(1, 0, searchValue).ToList();
         }
+
         /// <summary>
-        /// Lấy thông tin nhà cung cấp dựa vào mã
+        /// Lấy thông tin của 1 nhà cung cấp dựa vào mã
         /// </summary>
         /// <param name="supplierID"></param>
         /// <returns></returns>
@@ -89,72 +96,86 @@ namespace _19T1021316.BusinessLayers
         {
             return supplierDB.Get(supplierID);
         }
+
         /// <summary>
-        /// Thêm mới nhà cung cấp
+        /// Bổ sung nhà cung cấp, Hàm trả về mã của nhà cung cấp được bổ sung
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static int AddGetSupplier(Supplier data)
+        public static int AddSupplier(Supplier data)
         {
             return supplierDB.Add(data);
         }
+
         /// <summary>
         /// Cập nhật nhà cung cấp
         /// </summary>
-        /// <param name="supplierID"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
         public static bool UpdateSupplier(Supplier data)
         {
             return supplierDB.Update(data);
         }
+
         /// <summary>
-        /// Xoá nhà cung cấp dựa vào ID
+        /// Xóa nhà cung cấp
         /// </summary>
-        /// <param name="supplierID"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public static bool DeleteSupplier(int supplierID)
+        public static bool DeleteSupplier(int data)
         {
-            return supplierDB.Delete(supplierID);
+            return supplierDB.Delete(data);
         }
+
         /// <summary>
-        /// Kiểm tra xem nhà cung cấp có dữ liệu liên quan hay không?
+        /// Kiểm tra xem nhà cung cấp có dữ liệu liên quan hay không
         /// </summary>
-        /// <param name="supplierID"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public static bool InUserSupplier(int supplierID)
+        public static bool InUsedSupplier(int supplierID)
         {
             return supplierDB.InUsed(supplierID);
         }
 
+
         #endregion
-        #region chức năng tác nghiệp liên quan đến khách hàng
+
+
+        #region Khách hàng
+
         /// <summary>
-        /// Tìm kiếm và lấy danh sách khách hàng dưới dạng phân trang
+        /// Tìm kiếm và lấy danh sách của Khách hàng
         /// </summary>
-        /// <param name="page"> trang cần xem</param>
-        /// <param name="pageSize"> Số dòng hiển thị trên mỗi trang (0 nếu không phân trang)</param>
-        /// <param name="searchValue">Giá trị tìm kiếm(chuỗi rỗng nếu lấy toàn bộ dữ liệu)</param>
-        /// <param name="rowCount">tham số đầu ra: số dòng dữ liệu truy vấn được</param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
         /// <returns></returns>
         public static List<Customer> ListOfCustomers(int page,
-            int pageSize,
-            string searchValue,
-            out int rowCount)
+                                                    int pageSize,
+                                                    string searchValue,
+                                                    out int rowCount)
         {
             rowCount = customerDB.Count(searchValue);
             return customerDB.List(page, pageSize, searchValue).ToList();
         }
+
+
         /// <summary>
-        /// Tìm kiếm và lấy danh sách khách hàng (không phân trang)
+        /// Tìm kiếm và lấy danh sách của Khách hàng (không phân trang)
         /// </summary>
-        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
         /// <returns></returns>
         public static List<Customer> ListOfCustomers(string searchValue = "")
         {
             return customerDB.List(1, 0, searchValue).ToList();
         }
+
         /// <summary>
-        /// Lấy thông tin khách hàng dựa vào mã
+        /// Lấy thông tin của 1 khách hàng dựa vào mã
         /// </summary>
         /// <param name="customerID"></param>
         /// <returns></returns>
@@ -162,17 +183,19 @@ namespace _19T1021316.BusinessLayers
         {
             return customerDB.Get(customerID);
         }
+
         /// <summary>
-        /// Thêm mới khách hàng
+        /// Bổ sung khách hàng, Hàm trả về mã của khách hàng được bổ sung
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static int AddGetCustomer(Customer data)
+        public static int AddCustomer(Customer data)
         {
             return customerDB.Add(data);
         }
+
         /// <summary>
-        /// Cập nhật thông tin khách hàng
+        /// Cập nhật khách hàng
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -180,204 +203,66 @@ namespace _19T1021316.BusinessLayers
         {
             return customerDB.Update(data);
         }
+
         /// <summary>
-        /// Xoá khách hàng dựa vào ID
+        /// Xóa Khách hàng
         /// </summary>
-        /// <param name="customerID"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public static bool DeleteCustomer(int customerID)
+        public static bool DeleteCustomer(int data)
         {
-            return customerDB.Delete(customerID);
+            return customerDB.Delete(data);
         }
+
         /// <summary>
-        /// Kiểm tra xem khách hàng có dữ liệu liên quan hay không?
+        /// Kiểm tra xem Khách hàng có dữ liệu liên quan hay không
         /// </summary>
         /// <param name="customerID"></param>
         /// <returns></returns>
-        public static bool InUserCustomer(int customerID)
+        public static bool InUsedCustomer(int customerID)
         {
             return customerDB.InUsed(customerID);
         }
 
-        #endregion
-
-        #region chức năng tác nghiệp liên quan đến loaị hàng
-        /// <summary>
-        /// Tìm kiếm và lấy danh sách loại hàng dưới dạng phân trang
-        /// </summary>
-        /// <param name="page"> trang cần xem</param>
-        /// <param name="pageSize"> Số dòng hiển thị trên mỗi trang (0 nếu không phân trang)</param>
-        /// <param name="searchValue">Giá trị tìm kiếm(chuỗi rỗng nếu lấy toàn bộ dữ liệu)</param>
-        /// <param name="rowCount">tham số đầu ra: số dòng dữ liệu truy vấn được</param>
-        /// <returns></returns>
-        public static List<Category> ListOfCategories(int page,
-            int pageSize,
-            string searchValue,
-            out int rowCount)
-        {
-            rowCount = categoryDB.Count(searchValue);
-            return categoryDB.List(page, pageSize, searchValue).ToList();
-        }
-        /// <summary>
-        /// Tìm kiếm và lấy danh sách loại hàng (không phân trang)
-        /// </summary>
-        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
-        /// <returns></returns>
-        public static List<Category> ListOfCategories(string searchValue = "")
-        {
-            return categoryDB.List(1, 0, searchValue).ToList();
-        }
-        /// <summary>
-        /// Lấy thông tin loại hàng dựa vào mã
-        /// </summary>
-        /// <param name="categoryID"></param>
-        /// <returns></returns>
-        public static Category GetCategory(int categoryID)
-        {
-            return categoryDB.Get(categoryID);
-        }
-        /// <summary>
-        /// Thêm mới loại hàng
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static int AddGetCategory(Category data)
-        {
-            return categoryDB.Add(data);
-        }
-        /// <summary>
-        /// Cập nhật thông tin loại hàng
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static bool UpdateCategory(Category data)
-        {
-            return categoryDB.Update(data);
-        }
-        /// <summary>
-        /// Xoá loại hàng dựa vào ID
-        /// </summary>
-        /// <param name="categoryID"></param>
-        /// <returns></returns>
-
-        public static bool DeleteCategory(int categoryID)
-        {
-            return categoryDB.Delete(categoryID);
-        }
-        /// <summary>
-        /// Kiểm tra xem loại hàng có dữ liệu liên quan hay không?
-        /// </summary>
-        /// <param name="categoryID"></param>
-        /// <returns></returns>
-        public static bool InUserCategory(int categoryID)
-        {
-            return categoryDB.InUsed(categoryID);
-        }
-
-        #endregion
-        #region chức năng tác nghiệp liên quan đến nhân viên
-        /// <summary>
-        /// Tìm kiếm và lấy danh sách nhân viên dưới dạng phân trang
-        /// </summary>
-        /// <param name="page"> trang cần xem</param>
-        /// <param name="pageSize"> Số dòng hiển thị trên mỗi trang (0 nếu không phân trang)</param>
-        /// <param name="searchValue">Giá trị tìm kiếm(chuỗi rỗng nếu lấy toàn bộ dữ liệu)</param>
-        /// <param name="rowCount">tham số đầu ra: số dòng dữ liệu truy vấn được</param>
-        /// <returns></returns>
-        public static List<Employee> ListOfEmployees(int page,
-            int pageSize,
-            string searchValue,
-            out int rowCount)
-        {
-            rowCount = employeeDB.Count(searchValue);
-            return employeeDB.List(page, pageSize, searchValue).ToList();
-        }
-        /// <summary>
-        /// Tìm kiếm và lấy danh sách nhân viên (không phân trang)
-        /// </summary>
-        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
-        /// <returns></returns>
-        public static List<Employee> ListOfEmployees(string searchValue = "")
-        {
-            return employeeDB.List(1, 0, searchValue).ToList();
-        }
-        /// <summary>
-        /// Lấy thông tin nhân viên dựa vào mã
-        /// </summary>
-        /// <param name="employeeID"></param>
-        /// <returns></returns>
-        public static Employee GetEmployee(int employeeID)
-        {
-            return employeeDB.Get(employeeID);
-        }
-        /// <summary>
-        /// Thêm mới nhân viên
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static int AddGetEmployee(Employee data)
-        {
-            return employeeDB.Add(data);
-        }
-        /// <summary>
-        /// Cập nhật thông tin nhân viên
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static bool UpdateEmployee(Employee data)
-        {
-            return employeeDB.Update(data);
-        }
-        /// <summary>
-        /// Xoá nhân viên dựa vào ID
-        /// </summary>
-        /// <param name="employeeID"></param>
-        /// <returns></returns>
-
-        public static bool DeleteEmployee(int employeeID)
-        {
-            return employeeDB.Delete(employeeID);
-        }
-        /// <summary>
-        /// Kiểm tra xem nhân viên có dữ liệu liên quan hay không?
-        /// </summary>
-        /// <param name="employeeID"></param>
-        /// <returns></returns>
-        public static bool InUserEmloyee(int employeeID)
-        {
-            return employeeDB.InUsed(employeeID);
-        }
 
         #endregion
 
-        #region chức năng tác nghiệp liên quan đến người giao hàng
+
+        #region Người giao hàng
+
         /// <summary>
-        /// Tìm kiếm và lấy danh sách người giao hàng dưới dạng phân trang
+        /// Tìm kiếm và lấy danh sách của Người giao hàng
         /// </summary>
-        /// <param name="page"> trang cần xem</param>
-        /// <param name="pageSize"> Số dòng hiển thị trên mỗi trang (0 nếu không phân trang)</param>
-        /// <param name="searchValue">Giá trị tìm kiếm(chuỗi rỗng nếu lấy toàn bộ dữ liệu)</param>
-        /// <param name="rowCount">tham số đầu ra: số dòng dữ liệu truy vấn được</param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
         /// <returns></returns>
         public static List<Shipper> ListOfShippers(int page,
-            int pageSize,
-            string searchValue,
-            out int rowCount)
+                                                    int pageSize,
+                                                    string searchValue,
+                                                    out int rowCount)
         {
             rowCount = shipperDB.Count(searchValue);
             return shipperDB.List(page, pageSize, searchValue).ToList();
         }
+
+
         /// <summary>
-        /// Tìm kiếm và lấy danh sách người giao hàng(không phân trang)
+        /// Tìm kiếm và lấy danh sách của Người giao hàng (không phân trang)
         /// </summary>
-        /// <param name="searchValue">Giá trị tìm kiếm (chuỗi rỗng nếu không phân trang)</param>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
         /// <returns></returns>
         public static List<Shipper> ListOfShippers(string searchValue = "")
         {
             return shipperDB.List(1, 0, searchValue).ToList();
         }
+
         /// <summary>
-        /// Lấy thông tin người giao hàng dựa vào mã
+        /// Lấy thông tin của 1 Người giao hàng dựa vào mã
         /// </summary>
         /// <param name="shipperID"></param>
         /// <returns></returns>
@@ -385,17 +270,19 @@ namespace _19T1021316.BusinessLayers
         {
             return shipperDB.Get(shipperID);
         }
+
         /// <summary>
-        /// Thêm mới người giao hàng
+        /// Bổ sung Người giao hàng, Hàm trả về mã của người giao hàng được bổ sung
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static int AddGetShipper(Shipper data)
+        public static int AddShipper(Shipper data)
         {
             return shipperDB.Add(data);
         }
+
         /// <summary>
-        ///  Cập nhật thông tin người giao hàng
+        /// Cập nhật Người giao hàng
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -403,27 +290,397 @@ namespace _19T1021316.BusinessLayers
         {
             return shipperDB.Update(data);
         }
+
         /// <summary>
-        /// Xoá người giao hàng dựa vào ID
+        /// Xóa Người giao hàng
         /// </summary>
-        /// <param name="shipperID"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public static bool DeleteShipper(int shipperID)
+        public static bool DeleteShipper(int data)
         {
-            return shipperDB.Delete(shipperID);
+            return shipperDB.Delete(data);
         }
+
         /// <summary>
-        /// Kiểm tra xem người giao hàng có dữ liệu liên quan hay không?
+        /// Kiểm tra xem Người giao hàng có dữ liệu liên quan hay không
         /// </summary>
         /// <param name="shipperID"></param>
         /// <returns></returns>
-        public static bool InUserShipper(int shipperID)
+        public static bool InUsedShipper(int shipperID)
         {
             return shipperDB.InUsed(shipperID);
         }
 
+
         #endregion
+
+
+        #region Nhân viên
+
+        /// <summary>
+        /// Tìm kiếm và lấy danh sách của Nhân viên
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
+        public static List<Employee> ListOfEmployees(int page,
+                                                    int pageSize,
+                                                    string searchValue,
+                                                    out int rowCount)
+        {
+            rowCount = employeeDB.Count(searchValue);
+            return employeeDB.List(page, pageSize, searchValue).ToList();
+        }
+
+
+        /// <summary>
+        /// Tìm kiếm và lấy danh sách của Nhân viên (không phân trang)
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
+        public static List<Employee> ListOfEmployees(string searchValue = "")
+        {
+            return employeeDB.List(1, 0, searchValue).ToList();
+        }
+
+        /// <summary>
+        /// Lấy thông tin của 1 Nhân viên dựa vào mã
+        /// </summary>
+        /// <param name="employeeID"></param>
+        /// <returns></returns>
+        public static Employee GetEmployee(int employeeID)
+        {
+            return employeeDB.Get(employeeID);
+        }
+
+        /// <summary>
+        /// Bổ sung Nhân viên, Hàm trả về mã của Nhân viên được bổ sung
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static int AddEmployee(Employee data)
+        {
+            return employeeDB.Add(data);
+        }
+
+        /// <summary>
+        /// Cập nhật Nhân viên
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool UpdateEmployee(Employee data)
+        {
+            return employeeDB.Update(data);
+        }
+
+        /// <summary>
+        /// Xóa Nhân viên
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool DeleteEmployee(int data)
+        {
+            return employeeDB.Delete(data);
+        }
+
+        /// <summary>
+        /// Kiểm tra xem Nhân viên có dữ liệu liên quan hay không
+        /// </summary>
+        /// <param name="employeeID"></param>
+        /// <returns></returns>
+        public static bool InUsedEmployee(int employeeID)
+        {
+            return employeeDB.InUsed(employeeID);
+        }
+
+
+        #endregion
+
+
+        #region Loại hàng
+
+        /// <summary>
+        /// Tìm kiếm và lấy danh sách của Loại hàng
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
+        public static List<Category> ListOfCategories(int page,
+                                                    int pageSize,
+                                                    string searchValue,
+                                                    out int rowCount)
+        {
+            rowCount = categoryDB.Count(searchValue);
+            return categoryDB.List(page, pageSize, searchValue).ToList();
+        }
+
+
+        /// <summary>
+        /// Tìm kiếm và lấy danh sách của Loại hàng (không phân trang)
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
+        public static List<Category> ListOfCategories(string searchValue = "")
+        {
+            return categoryDB.List(1, 0, searchValue).ToList();
+        }
+
+        /// <summary>
+        /// Lấy thông tin của 1 Loại hàng dựa vào mã
+        /// </summary>
+        /// <param name="categoryID"></param>
+        /// <returns></returns>
+        public static Category GetCategory(int categoryID)
+        {
+            return categoryDB.Get(categoryID);
+        }
+
+        /// <summary>
+        /// Bổ sung Loại hàng, Hàm trả về mã của Loại hàng được bổ sung
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static int AddCategory(Category data)
+        {
+            return categoryDB.Add(data);
+        }
+
+        /// <summary>
+        /// Cập nhật Loại hàng
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool UpdateCategory(Category data)
+        {
+            return categoryDB.Update(data);
+        }
+
+        /// <summary>
+        /// Xóa Loại hàng
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool DeleteCategory(int data)
+        {
+            return categoryDB.Delete(data);
+        }
+
+        /// <summary>
+        /// Kiểm tra xem Loại hàng có dữ liệu liên quan hay không
+        /// </summary>
+        /// <param name="categoryID"></param>
+        /// <returns></returns>
+        public static bool InUsedCategory(int categoryID)
+        {
+            return categoryDB.InUsed(categoryID);
+        }
+
+
+        #endregion
+
+
+        #region Mặt hàng
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="searchValue"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
+        public static List<Product> ListOfProducts(int page,
+                                                    int pageSize,
+                                                    string searchValue,
+                                                    out int rowCount)
+        {
+            rowCount = productDB.Count(searchValue);
+            return productDB.List(page, pageSize, searchValue).ToList();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchValue"></param>
+        /// <returns></returns>
+        public static List<Product> ListOfProduct(string searchValue = "")
+        {
+            return productDB.List(1, 0, searchValue).ToList();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <returns></returns>
+        public static Product GetProduct(int productID)
+        {
+            return productDB.Get(productID);
+        }
+
+        /// <summary>
+        /// Bổ sung Người giao hàng, Hàm trả về mã của người giao hàng được bổ sung
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static int AddProduct(Product data)
+        {
+            return productDB.Add(data);
+        }
+
+        /// <summary>
+        /// Cập nhật Người giao hàng
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool UpdateProduct(Product data)
+        {
+            return productDB.Update(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool DeleteProduct(int data)
+        {
+            return productDB.Delete(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <returns></returns>
+        public static bool InUsedProduct(int productID)
+        {
+            return productDB.InUsed(productID);
+        }
+
+        #endregion
+
+
+        #region Ảnh Mặt hàng
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchValue"></param>
+        /// <returns></returns>
+        public static List<ProductPhoto> ListPhotos(int productID)
+        {
+            return productDB.ListPhotos(productID).ToList();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="photoID"></param>
+        /// <returns></returns>
+        public static ProductPhoto GetPhoto(long photoID)
+        {
+            return productDB.GetPhoto(photoID);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static long AddPhoto(ProductPhoto data)
+        {
+            return productDB.AddPhoto(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool UpdatePhoto(ProductPhoto data)
+        {
+            return productDB.UpdatePhoto(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="photoID"></param>
+        /// <returns></returns>
+        public static bool DeletePhoto(long photoID)
+        {
+            return DeletePhoto(photoID);
+        }
+
+        #endregion
+
+
+        #region Thuộc tính Mặt hàng
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productID"></param>
+        /// <returns></returns>
+        public static IList<ProductAttribute> ListAttributes(int productID)
+        {
+            return productDB.ListAttributes(productID);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attributeID"></param>
+        /// <returns></returns>
+        public static ProductAttribute GetAttribute(long attributeID)
+        {
+            return productDB.GetAttribute(attributeID);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static long AddAttribute(ProductAttribute data)
+        {
+            return productDB.AddAttribute(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static bool UpdateAttribute(ProductAttribute data)
+        {
+            return productDB.UpdateAttribute(data);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attributeID"></param>
+        /// <returns></returns>
+        public static bool DeleteAttribute(long attributeID)
+        {
+            return productDB.DeleteAttribute(attributeID);
+        }
+
+        #endregion
+
     }
 }
-
 

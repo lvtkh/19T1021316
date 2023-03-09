@@ -3,20 +3,19 @@
 @{
     Layout = null;
 }
-
-@* Kết quả tìm kiếm *@
-<p style="margin-top: 10px;">
-    Có <strong>@Model.RowCount</strong> Nhân viên trong tổng số <strong>@Model.PageCount</strong> trang
+<!--danh sách nhà cung cấp , phân trang-->
+<p>
+    Có <strong>@Model.RowCount</strong> nhân viên trong tổng số <strong>@Model.PageCount</strong> trang
 </p>
-
 <div class="table-responsive">
-    <table style="margin-bottom:0;" class="table table-bordered table-striped table-hover">
+    <table class="table table-bordered  table-hover table-striped">
         <thead>
             <tr class="bg-primary">
                 <th>Ảnh</th>
-                <th>Họ đệm</th>
+                <th>Họ</th>
                 <th>Tên</th>
                 <th>Ngày sinh</th>
+
                 <th>Ghi chú</th>
                 <th>Email</th>
                 <th></th>
@@ -26,61 +25,48 @@
             @foreach (var item in Model.Data)
             {
                 <tr>
-                    <td> <img src="@item.Photo" class="media-object" style="width:60px"> </td>
+                    <td>
+                        @if (item.Photo.Contains("http"))
+                        {
+                            <img style="width:100px;height:50px;border-radius:6px" src="@item.Photo" alt="avatar" />
+                        }
+                        else
+                        {
+                            <img style="width:100px;height:100px;border-radius:6px" src="~/Images/Employees/@item.Photo" alt="avatar" />}
+                    </td>
+                    <td>@item.FirstName </td>
                     <td>@item.LastName</td>
-                    <td>@item.FirstName</td>
-                    <td>@item.BirthDate.Date.ToString("yyyy/MM/dd")</td>
-                    <td>@item.Notes</td>
+                    <td>@string.Format("{0:dd-MM-yyyy}", item.BirthDate)</td>
+
+                    <td>@item.Notes </td>
                     <td>@item.Email</td>
 
                     <td class="text-right">
                         <a href="~/Employee/Edit/@item.EmployeeID" class="btn btn-sm btn-primary" title="Sửa">
                             <i class="fa fa-edit"></i>
                         </a>
-                        <a href="~/Employee/Delete/@item.EmployeeID" class="btn btn-sm btn-danger" title="Xoá">
+                        <a href="~/Employee/Delete/@item.EmployeeID" class="btn btn-sm btn-danger" title="Xóa">
                             <i class="fa fa-trash"></i>
+
                         </a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-
-    <!-- Left-aligned media object -->
-    @*<div class="media">
-            <div class="media-left">
-                <img src="https://www.w3schools.com/bootstrap/img_avatar1.png" class="media-object" style="width:60px">
-            </div>
-            <div class="media-body">
-                <h4 class="media-heading">Left-aligned</h4>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-            </div>
-        </div>*@
-
-
-</div>
-
-
-@* Phân trang *@
-<div class="text-center">
-    <ul class="pagination">
-        @for (int i = 1; i <= Model.PageCount; i++)
-        {
-            if (i == Model.Page)
+    <div class="text-center">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.PageCount; i++)
             {
-
-                <li class="active"><a href="#">i</a></li>
+                if (i == Model.Page)
+                {
+                    <li class="active"><a href="#">@i</a></li>
+                }
+                else
+                {
+                    <li><a href="javascript:;" onclick="doSearch(@i)">@i</a></li>
+                }
             }
-            else
-            {
-                <li> <a href="javascript:;" onclick="doSearch(@i)">@i</a></li>
-            }
-
-        }
-
-    </ul>
+        </ul>
+    </div>
 </div>
-
-
-

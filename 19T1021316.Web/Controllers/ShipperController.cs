@@ -9,19 +9,19 @@ using _19T1021316.DataLayers;
 
 namespace _19T1021316.Web.Controllers
 {
+    [Authorize]
     public class ShipperController : Controller
     {
         private const int PAGE_SIZE = 5;
         private const string SHIPPER_SEARCH = "ShipperSearchCondition";
-
-        ///// <summary>
-        ///// quản lý giao hàng
-        ///// </summary>
-        ///// <returns></returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         //public ActionResult Index(int page = 1, string searchValue = "")
         //{
         //    int rowCount = 0;
-        //    var data = CommonDataService.ListOfShippers(page, PAGE_SIZE, searchValue, out rowCount);
+        //    var data = CommonDataService.ListOfShipper(page, PAGE_SIZE, searchValue, out rowCount);
         //    int pageCount = rowCount / PAGE_SIZE;
         //    if (rowCount % PAGE_SIZE > 0)
         //        rowCount += 1;
@@ -31,28 +31,35 @@ namespace _19T1021316.Web.Controllers
         //    ViewBag.SeachValue = searchValue;
         //    return View(data);
         //}
-
         public ActionResult Index()
         {
             Models.PaginationSearchInput condition = Session[SHIPPER_SEARCH] as Models.PaginationSearchInput;
+
             if (condition == null)
             {
                 condition = new Models.PaginationSearchInput()
                 {
                     Page = 1,
                     PageSize = PAGE_SIZE,
-                    SearchValue = ""
+                    SearchValue = "",
                 };
-            }
-
+            };
             return View(condition);
         }
+        public ActionResult Create()
+        {
+            ViewBag.Title = "Bổ sung loại hàng";
+            Shipper data = new Shipper()
+            {
+                ShipperID = 0
+            };
 
+            return View("Edit", data);
+        }
         public ActionResult Search(Models.PaginationSearchInput condition)
         {
             int rowCount = 0;
             var data = CommonDataService.ListOfShippers(condition.Page, condition.PageSize, condition.SearchValue, out rowCount);
-
             var result = new Models.ShipperSearchOutput()
             {
                 Page = condition.Page,
@@ -61,27 +68,8 @@ namespace _19T1021316.Web.Controllers
                 RowCount = rowCount,
                 Data = data
             };
-
-            Session[SHIPPER_SEARCH] = condition;
-
+            Session["ShipperSearchCondition"] = condition;
             return View(result);
-        }
-
-
-
-        /// <summary>
-        /// Thêm Người giao hàng
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Create()
-        {
-            ViewBag.Title = "Thêm Người giao hàng";
-            Shipper data = new Shipper()
-            {
-                ShipperID = 0
-            };
-
-            return View("Edit", data);
         }
         /// <summary>
         /// Sửa Người giao hàng
@@ -91,37 +79,26 @@ namespace _19T1021316.Web.Controllers
         {
             if (id == 0)
                 return RedirectToAction("Index");
-
             var data = CommonDataService.GetShipper(id);
-
             if (data == null)
                 return RedirectToAction("Index");
-
-            ViewBag.Title = "Sửa người giao hàng";
+            ViewBag.Title = "Cập nhập Người giao hàng";
             return View(data);
+
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Save(Shipper data)
+        public ActionResult Save(Shipper data)//save(int SupplierID, string SupplierName,string ContactName,...
         {
             if (string.IsNullOrWhiteSpace(data.ShipperName))
-                ModelState.AddModelError(nameof(data.ShipperName), "Tên không được để trống");
-            if (string.IsNullOrWhiteSpace(data.Phone))
-                ModelState.AddModelError(nameof(data.Phone), "Vui lòng nhập số điện thoại");
-
+                ModelState.AddModelError(nameof(data.ShipperName), "Tên người giao hàng không được để trống");
+            data.Phone = data.Phone ?? "";
             if (!ModelState.IsValid)
             {
-                ViewBag.Title = data.ShipperID == 0 ? "Bổ sung người giao hàng" : "Cập nhật người giao hàng";
+                ViewBag.Tille = data.ShipperID == 0 ? "Bổ sung người giao hàng" : "Cập nhât người giao hàng";
                 return View("Edit", data);
             }
             if (data.ShipperID == 0)
             {
-                CommonDataService.AddGetShipper(data);
+                CommonDataService.AddShipper(data);
             }
             else
             {
@@ -137,7 +114,6 @@ namespace _19T1021316.Web.Controllers
         {
             if (id == 0)
                 return RedirectToAction("Index");
-
             if (Request.HttpMethod == "POST")
             {
                 CommonDataService.DeleteShipper(id);

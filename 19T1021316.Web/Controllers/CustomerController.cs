@@ -9,6 +9,7 @@ using _19T1021316.DataLayers;
 
 namespace _19T1021316.Web.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         private const int PAGE_SIZE = 5;
@@ -43,7 +44,7 @@ namespace _19T1021316.Web.Controllers
                     PageSize = PAGE_SIZE,
                     SearchValue = ""
                 };
-            }
+            };
 
             return View(condition);
         }
@@ -62,7 +63,7 @@ namespace _19T1021316.Web.Controllers
                 Data = data
             };
 
-            Session[CUSTOMER_SEARCH] = condition;
+            Session["CustomerSearchCondition"] = condition;
 
             return View(result);
         }
@@ -111,25 +112,24 @@ namespace _19T1021316.Web.Controllers
         {
             if (string.IsNullOrWhiteSpace(data.CustomerName))
                 ModelState.AddModelError(nameof(data.CustomerName), "Tên khách hàng không được để trống");
-            if (string.IsNullOrWhiteSpace(data.ContactName))
-                ModelState.AddModelError(nameof(data.ContactName), "Tên liên lạc không dc để trống");
             if (string.IsNullOrWhiteSpace(data.Country))
-                ModelState.AddModelError(nameof(data.Email), "Vui lòng nhập email");
-            data.Address = data.Address ?? "";
-
+                ModelState.AddModelError(nameof(data.Country), "Vui lòng chọn quốc gia");
+            if (string.IsNullOrWhiteSpace(data.Email))
+                ModelState.AddModelError(nameof(data.Email), "Email không được để trống");
+            if (string.IsNullOrWhiteSpace(data.Address))
+                ModelState.AddModelError(nameof(data.Address), "Địa chỉ không được để trống");
+            data.ContactName = data.ContactName ?? "";
             data.City = data.City ?? "";
             data.PostalCode = data.PostalCode ?? "";
-            data.Country = data.Country ?? "";
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Title = data.CustomerID == 0 ? "Bổ sung khách hàng" : "Cập nhật khách hàng";
+                ViewBag.Tille = data.CustomerID == 0 ? "Bổ sung khách hàng" : "Cập nhật khách hàng ";
                 return View("Edit", data);
             }
-
             if (data.CustomerID == 0)
             {
-                CommonDataService.AddGetCustomer(data);
+                CommonDataService.AddCustomer(data);
             }
             else
             {

@@ -10,7 +10,7 @@ using _19T1021316.DomainModels;
 namespace _19T1021316.DataLayers.SQL_Server
 {
     /// <summary>
-    /// Sử lý dữ liệu loại hàng
+    /// Xử lý dữ liệu loại hàng
     /// </summary>
     public class CategoryDAL : _BaseDAL, ICommonDAL<Category>
     {

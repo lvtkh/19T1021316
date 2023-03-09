@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 namespace _19T1021316.DataLayers.SQL_Server
 {
     /// <summary>
-    /// 
+    /// Cài đặt chức năng xử lý dữ liệu liên quan đến khách hàng
     /// </summary>
     public class CustomerDAL : _BaseDAL, ICommonDAL<Customer>
     {

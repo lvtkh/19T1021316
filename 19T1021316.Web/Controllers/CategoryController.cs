@@ -6,16 +6,19 @@ using System.Web.Mvc;
 using _19T1021316.DomainModels;
 using _19T1021316.BusinessLayers;
 using _19T1021316.DataLayers;
+using System.Web.UI;
 
 namespace _19T1021316.Web.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private const int PAGE_SIZE = 5;
         private const string CATEGORY_SEARCH = "CategorySearchCondition";
 
+
         /// <summary>
-        /// quản lý loại hàng
+        /// 
         /// </summary>
         /// <returns></returns>
         //public ActionResult Index(int page = 1, string searchValue = "")
@@ -31,8 +34,6 @@ namespace _19T1021316.Web.Controllers
         //    ViewBag.SeachValue = searchValue;
         //    return View(data);
         //}
-
-
         public ActionResult Index()
         {
             Models.PaginationSearchInput condition = Session[CATEGORY_SEARCH] as Models.PaginationSearchInput;
@@ -42,40 +43,14 @@ namespace _19T1021316.Web.Controllers
                 {
                     Page = 1,
                     PageSize = PAGE_SIZE,
-                    SearchValue = ""
+                    SearchValue = "",
                 };
-            }
-
+            };
             return View(condition);
         }
-
-        public ActionResult Search(Models.PaginationSearchInput condition)
-        {
-            int rowCount = 0;
-            var data = CommonDataService.ListOfCategories(condition.Page, condition.PageSize, condition.SearchValue, out rowCount);
-
-            var result = new Models.CategorySearchOutput()
-            {
-                Page = condition.Page,
-                Pagesize = condition.PageSize,
-                SearchValue = condition.SearchValue,
-                RowCount = rowCount,
-                Data = data
-            };
-
-            Session[CATEGORY_SEARCH] = condition;
-
-            return View(result);
-        }
-
-
-        /// <summary>
-        /// Thêm Loại hàng
-        /// </summary>
-        /// <returns></returns>
         public ActionResult Create()
         {
-            ViewBag.Title = "Thêm Loại hàng";
+            ViewBag.Title = "Bổ sung loại hàng";
             Category data = new Category()
             {
                 CategoryID = 0
@@ -84,44 +59,56 @@ namespace _19T1021316.Web.Controllers
             return View("Edit", data);
         }
         /// <summary>
+        /// Tìm kiếm
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public ActionResult Search(Models.PaginationSearchInput condition)
+        {
+            int rowCount = 0;
+            var data = CommonDataService.ListOfCategories(condition.Page, condition.PageSize, condition.SearchValue, out rowCount);
+            var result = new Models.CategorySearchOutput()
+            {
+                Page = condition.Page,
+                Pagesize = condition.PageSize,
+                SearchValue = condition.SearchValue,
+                RowCount = rowCount,
+                Data = data
+            };
+            Session["CategorySearchCondition"] = condition;
+            return View(result);
+        }
+        /// <summary>
         /// Sửa Loại hàng
         /// </summary>
         /// <returns></returns>
+
         public ActionResult Edit(int id = 0)
         {
             if (id == 0)
                 return RedirectToAction("Index");
-
             var data = CommonDataService.GetCategory(id);
-
             if (data == null)
                 return RedirectToAction("Index");
-
-            ViewBag.Title = "Cập nhật loại hàng";
+            ViewBag.Title = "Sửa loại hàng";
             return View(data);
+
         }
-        /// <summary>
-        /// lưu loại hàng
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Save(Category data)
+        public ActionResult Save(Category data)//save(int SupplierID, string SupplierName,string ContactName,...
         {
             if (string.IsNullOrWhiteSpace(data.CategoryName))
                 ModelState.AddModelError(nameof(data.CategoryName), "Tên loại hàng không được để trống");
-
             data.Description = data.Description ?? "";
+            data.ParentCategoryId = data.ParentCategoryId ?? "";
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Title = data.CategoryID == 0 ? "Bổ sung loại hàng " : "Cập nhật loại hàng";
+                ViewBag.Tille = data.CategoryID == 0 ? "Bổ sung loại hàng" : "Cập nhât loại hàng ";
                 return View("Edit", data);
             }
             if (data.CategoryID == 0)
             {
-                CommonDataService.AddGetCategory(data);
+                CommonDataService.AddCategory(data);
             }
             else
             {
@@ -137,7 +124,6 @@ namespace _19T1021316.Web.Controllers
         {
             if (id == 0)
                 return RedirectToAction("Index");
-
             if (Request.HttpMethod == "POST")
             {
                 CommonDataService.DeleteCategory(id);
@@ -151,6 +137,5 @@ namespace _19T1021316.Web.Controllers
                 return View(data);
             }
         }
-
     }
 }

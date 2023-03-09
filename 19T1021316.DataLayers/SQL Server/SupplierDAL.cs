@@ -10,7 +10,7 @@ using _19T1021316.DomainModels;
 namespace _19T1021316.DataLayers.SQL_Server
 {
     /// <summary>
-    /// 
+    /// Cài đặt chức năng xử lý dữ liệu liên quan đến nhà cung cấp
     /// </summary>
     public class SupplierDAL : _BaseDAL, ICommonDAL<Supplier>
     {
@@ -22,7 +22,7 @@ namespace _19T1021316.DataLayers.SQL_Server
         {
         }
         /// <summary>
-        /// 
+        /// thêm nhà cung cấp
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
@@ -52,7 +52,7 @@ namespace _19T1021316.DataLayers.SQL_Server
             return result;
         }
         /// <summary>
-        /// 
+        /// phân trang
         /// </summary>
         /// <param name="searchValue"></param>
         /// <returns></returns>
@@ -86,7 +86,7 @@ namespace _19T1021316.DataLayers.SQL_Server
             return count;
         }
         /// <summary>
-        /// 
+        /// xoá nhà cung cấp
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

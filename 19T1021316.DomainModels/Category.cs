@@ -23,5 +23,7 @@ namespace _19T1021316.DomainModels
         /// 
         /// </summary>
         public string Description { get; set; }
+        public string ParentCategoryld { get; set; }
+        public object ParentCategoryId { get; set; }
     }
 }

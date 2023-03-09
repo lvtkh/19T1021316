@@ -10,7 +10,7 @@ using _19T1021316.DomainModels;
 namespace _19T1021316.DataLayers.SQL_Server
 {
     /// <summary>
-    /// 
+    /// Cài đặt chức năng xử lý dữ liệu liên quan đến người giao hàng
     /// </summary>
     public class ShipperDAL : _BaseDAL, ICommonDAL<Shipper>
     {
